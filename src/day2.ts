@@ -33,8 +33,8 @@ for (let a = 0; a < 100; a++) {
         const s = [...state];
         s[1] = a;
         s[2] = b;
-        if(compute(s) ===19690720) {
-            console.log('result: ', 100*a+b);
+        if (compute(s) === 19690720) {
+            console.log('result: ', 100 * a + b);
         }
     }
 }
