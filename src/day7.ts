@@ -94,9 +94,9 @@ function run(programState: ProgramState): ProgramState {
             case '08':
             case '8':
                 if (param(state[programState.nextPosition + 1], parameterModes[0], state) === param(state[programState.nextPosition + 2], parameterModes[1], state)) {
-                    updateState(state[programState.nextPosition + 3], 1);
+                    updateState(state[programState.nextPosition + 3], 1, state);
                 } else {
-                    updateState(state[programState.nextPosition + 3], 0);
+                    updateState(state[programState.nextPosition + 3], 0, state);
                 }
                 commandLength = 4;
                 break;

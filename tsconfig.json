@@ -2,7 +2,8 @@
   "compilerOptions": {
     "outDir": "./built",
     "allowJs": false,
-    "target": "esnext"
+    "module": "commonjs",
+    "target": "es2017"
   },
   "include": [
     "./src/**/*"
