@@ -1,4 +1,4 @@
-import {Point} from './day3';
+import {Point} from './point';
 
 const intput =
     '##.##..#.####...#.#.####\n' +
@@ -29,33 +29,13 @@ const intput =
 const points = new Set<Point>();
 intput.split('\n').forEach((l, y) => l.split('').forEach((p, x) => {
     if (p === '#') {
-        points.add(new Point(y, x))
+        points.add(new Point(x, y))
     }
 }));
 
-
-function gcd(a, b) {
-    if (!b) {
-        return a;
-    }
-
-    return gcd(b, a % b);
-}
-
-function getDirectionMinimal(from: Point, to: Point): Point {
-    const direction = to.substract(from);
-    const commonFactor = gcd(direction.x, direction.y);
-    return new Point(direction.x / Math.abs(commonFactor), direction.y / Math.abs(commonFactor));
-}
-
-function getDirection(from: Point, to: Point): Point {
-    const direction = to.substract(from);
-    return new Point(direction.x, direction.y);
-}
-
 function isBlocked(origin: Point, inbetween: Point, destination: Point): boolean {
-    return getDirectionMinimal(origin, inbetween).equals(getDirectionMinimal(origin, destination))
-        && getDirection(origin, inbetween).length() < getDirection(origin, destination).length();
+    return origin.directionTo(inbetween).getDirectionMinimal().equals(origin.directionTo(destination).getDirectionMinimal())
+        && origin.directionTo(inbetween).length() < origin.directionTo(destination).length();
 }
 
 function getVisiblePoints(origin: Point, allPoints: Point[]) {
@@ -65,15 +45,30 @@ function getVisiblePoints(origin: Point, allPoints: Point[]) {
 
 const pointsList = [...points];
 
-// console.log('points: ', pointsList);
-// console.log('point: ', pointsList[5]);
-// console.log('direction: ', getDirection(pointsList[1], pointsList[1]));
-// console.log('visible from 0,1: ', getVisiblePoints(pointsList[5], pointsList).length, getVisiblePoints(pointsList[5], pointsList));
 const visibleCounts = pointsList.map(p => getVisiblePoints(p, pointsList).length);
 const maxVisible = Math.max(...(visibleCounts));
 let maxVisibleIndex = visibleCounts.indexOf(maxVisible);
 const maxVisiblePoint = pointsList[maxVisibleIndex];
-console.log('max visible = ', maxVisible, maxVisibleIndex, maxVisiblePoint);
+console.log('max visible = ', maxVisible, maxVisiblePoint);
 
-// console.log('counts: ', pointsList.map(p => getVisiblePoints(p, pointsList).length));
+const pointsByAngle: { [angle: number]: Point[] } = pointsList.reduce((acc, p) => {
+    const angleOriginToP = maxVisiblePoint.directionTo(p).getDirectionMinimal().angle();
+    acc[angleOriginToP] = [p, ...(acc[angleOriginToP] || [])];
+    return acc;
+}, {});
+for (let pointsList of Object.values(pointsByAngle)) {
+    pointsList.sort((a, b) => maxVisiblePoint.directionTo(a).length() < maxVisiblePoint.directionTo(b).length() ? -1 : 1)
+
+}
+const erased: Point[] = [];
+while (erased.length < points.size - 1) {
+    for (let angle of Object.keys(pointsByAngle).sort()) {
+        if (pointsByAngle[angle].length) {
+            erased.push(pointsByAngle[angle].shift())
+        }
+    }
+}
+
+// console.log('erased: ', erased);
+console.log('erased 200: ', erased[199]);
 
