@@ -22,9 +22,25 @@ function param(paramValue: number, paramMode: string, programState: ProgramState
     }
 }
 
-function updateState(pos: number, value: number, state: number[]) {
-    console.debug(`update pos ${pos} : ${state[pos]} -> ${value}`);
-    state[pos] = value;
+function updateState(pos: number, posParamMode: string, value: number, state: ProgramState) {
+    let actualPos;
+    switch (posParamMode) {
+        case '0':
+        case undefined:
+        case '':
+            actualPos = pos;
+            break;
+        case '1':
+            console.warn('unexpected mode "immediate" for input!');
+            break;
+        case '2':
+            actualPos = state.relativeBase + pos;
+            break;
+        default:
+            console.warn('unexpected paramMode: ', posParamMode);
+    }
+    console.debug(`update pos2 ${actualPos} : ${state.state[actualPos]} -> ${value}`);
+    state.state[actualPos] = value;
 }
 
 
@@ -43,12 +59,12 @@ export function run(programState: ProgramState): ProgramState {
             case '01':
             case '1':
                 // updateState(state[programState.nextPosition + 3], param(state[programState.nextPosition + 1], parameterModes[0], programState) + param(state[programState.nextPosition + 2], parameterModes[1], programState), state);
-                updateState(param(state[programState.nextPosition + 3], parameterModes[2], programState), param(state[programState.nextPosition + 1], parameterModes[0], programState) + param(state[programState.nextPosition + 2], parameterModes[1], programState), state);
+                updateState(state[programState.nextPosition + 3], parameterModes[2], param(state[programState.nextPosition + 1], parameterModes[0], programState) + param(state[programState.nextPosition + 2], parameterModes[1], programState), programState);
                 break;
             case '02':
             case '2':
                 // updateState(state[programState.nextPosition + 3], param(state[programState.nextPosition + 1], parameterModes[0], programState) * param(state[programState.nextPosition + 2], parameterModes[1], programState), state);
-                updateState(param(state[programState.nextPosition + 3], parameterModes[2], programState), param(state[programState.nextPosition + 1], parameterModes[0], programState) * param(state[programState.nextPosition + 2], parameterModes[1], programState), state);
+                updateState(state[programState.nextPosition + 3], parameterModes[2], param(state[programState.nextPosition + 1], parameterModes[0], programState) * param(state[programState.nextPosition + 2], parameterModes[1], programState), programState);
                 break;
             case '03':
             case '3':
@@ -56,7 +72,7 @@ export function run(programState: ProgramState): ProgramState {
                     console.log(`command=${state[programState.nextPosition]}, opcode=${opcode}, relBase=${programState.relativeBase} parameterModes: `, parameterModes);
                     // updateState(state[programState.nextPosition + 1], programState.remainingInputs[nextInputIndex], state);
                     // updateState(state[programState.nextPosition + 1], param(programState.remainingInputs[nextInputIndex], parameterModes[0], programState), state);
-                    updateState(param(state[programState.nextPosition + 1], parameterModes[0], programState), programState.remainingInputs[nextInputIndex], state);
+                    updateState(state[programState.nextPosition + 1], parameterModes[0], programState.remainingInputs[nextInputIndex], programState);
                     nextInputIndex++;
                     commandLength = 2;
                 } else {
@@ -96,10 +112,10 @@ export function run(programState: ProgramState): ProgramState {
             case '7':
                 if (param(state[programState.nextPosition + 1], parameterModes[0], programState) < param(state[programState.nextPosition + 2], parameterModes[1], programState)) {
                     // updateState(state[programState.nextPosition + 3], 1, state);
-                    updateState(param(state[programState.nextPosition + 3], parameterModes[2], programState), 1, state);
+                    updateState(state[programState.nextPosition + 3], parameterModes[2], 1, programState);
                 } else {
                     // updateState(state[programState.nextPosition + 3], 0, state);
-                    updateState(param(state[programState.nextPosition + 3], parameterModes[2], programState), 0, state);
+                    updateState(state[programState.nextPosition + 3], parameterModes[2], 0, programState);
                 }
                 commandLength = 4;
                 break;
@@ -107,10 +123,10 @@ export function run(programState: ProgramState): ProgramState {
             case '8':
                 if (param(state[programState.nextPosition + 1], parameterModes[0], programState) === param(state[programState.nextPosition + 2], parameterModes[1], programState)) {
                     // updateState(state[programState.nextPosition + 3], 1, state);
-                    updateState(param(state[programState.nextPosition + 3], parameterModes[2], programState), 1, state);
+                    updateState(state[programState.nextPosition + 3], parameterModes[2], 1, programState);
                 } else {
                     // updateState(state[programState.nextPosition + 3], 0, state);
-                    updateState(param(state[programState.nextPosition + 3], parameterModes[2], programState), 0, state);
+                    updateState(state[programState.nextPosition + 3], parameterModes[2], 0, programState);
                 }
                 commandLength = 4;
                 break;
