@@ -40,6 +40,15 @@ export class Point {
         const commonFactor = gcd(this.x, this.y);
         return new Point(this.x / Math.abs(commonFactor), this.y / Math.abs(commonFactor));
     }
+
+    rotateRight() {
+        return new Point(-this.y, this.x,);
+    }
+
+    rotateLeft() {
+
+        return new Point(this.y, -this.x,);
+    }
 }
 
 function gcd(a, b) {
