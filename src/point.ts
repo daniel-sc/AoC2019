@@ -51,6 +51,40 @@ export class Point {
     }
 }
 
+export class Point3 {
+    constructor(public readonly x: number, public readonly y: number, public readonly z: number) {
+    }
+
+    add(p: Point3): Point3 {
+        return new Point3(this.x + p.x, this.y + p.y, this.z + p.z);
+    }
+
+    directionTo(to: Point3): Point3 {
+        return to.substract(this);
+    }
+
+    toString() {
+        return `${this.x},${this.y},${this.z}`;
+    }
+
+    static fromString(p: string) {
+        const coordinates = p.split(',');
+        return new Point3(parseInt(coordinates[0]), parseInt(coordinates[1]), parseInt(coordinates[2]));
+    }
+
+    length() {
+        return Math.abs(this.x) + Math.abs(this.y) + Math.abs(this.z);
+    }
+
+    substract(p: Point3) {
+        return new Point3(this.x - p.x, this.y - p.y, this.z - p.z);
+    }
+
+    equals(p: Point3) {
+        return p.x === this.x && p.y === this.y && p.z === this.z;
+    }
+}
+
 function gcd(a, b) {
     if (!b) {
         return a;
