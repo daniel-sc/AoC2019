@@ -92,3 +92,7 @@ function gcd(a, b) {
 
     return gcd(b, a % b);
 }
+
+export function lcm(a, b) {
+    return (a * b) / gcd(a, b);
+}
