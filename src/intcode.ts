@@ -87,7 +87,7 @@ export function run(programState: ProgramState): ProgramState {
             case '04':
             case '4':
                 outputs.push(param(state[programState.nextPosition + 1], parameterModes[0], programState));
-                console.log('updated outputs: ', outputs);
+                console.debug('updated outputs: ', outputs);
                 commandLength = 2;
                 break;
             case '05':
