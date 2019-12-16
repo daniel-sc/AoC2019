@@ -2,3 +2,4 @@
 *.js
 built/
 node_modules/
+*.log
