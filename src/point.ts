@@ -46,7 +46,6 @@ export class Point {
     }
 
     rotateLeft() {
-
         return new Point(this.y, -this.x,);
     }
 }
